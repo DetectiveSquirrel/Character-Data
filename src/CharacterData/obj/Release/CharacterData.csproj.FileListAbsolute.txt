@@ -1,0 +1,6 @@
+D:\Tools\Path of Exile Tools\Macros\plugins\Character Data\src\CharacterData\obj\Release\CharacterData.csproj.CoreCompileInputs.cache
+D:\Tools\Path of Exile Tools\Macros\plugins\Character Data\src\CharacterData\obj\Release\CharacterData.dll
+D:\Tools\Path of Exile Tools\Macros\plugins\Character Data\src\CharacterData\obj\Release\CharacterData.pdb
+D:\Tools\Path of Exile Tools\Macros\plugins\Character Data\CharacterData.dll
+D:\Tools\Path of Exile Tools\Macros\plugins\Character Data\CharacterData.pdb
+D:\Tools\Path of Exile Tools\Macros\plugins\Character Data\src\CharacterData\obj\Release\CharacterData.csprojAssemblyReference.cache
