@@ -127,6 +127,18 @@ namespace CharacterData.Core
             PlayerEntities.Remove(entityWrapper);
         }
 
+        public override void DrawSettings()
+        {
+            base.DrawSettings();
+            ImGui.BulletText("Stash Toggle writes to memory, use with caution");
+            ImGui.BulletText("CAREFUL!!!!! ");
+            ImGui.BulletText("CAREFUL!!!!! ");
+            ImGui.BulletText("CAREFUL!!!!! ");
+            ImGui.BulletText("CAREFUL!!!!! ");
+            ImGui.BulletText("CAREFUL!!!!! ");
+            ImGui.BulletText("CAREFUL!!!!! ");
+        }
+
         //public override void DrawSettings()
         //{
         //    bool outBool;
