@@ -48,13 +48,13 @@ namespace CharacterData.Utils
             return playersInParty;
         }
 
-        public static List<PartyElementWindow> GetPlayerInfoElementList(List<Entity> entityList)
+        public static List<PartyElementWindow> GetPlayerInfoElementList(List<Entity> entityList, int child)
         {
             var playersInParty = new List<PartyElementWindow>();
 
             try
             {
-                var baseWindow = CharacterData.Core.Core.MainPlugin.GameController.IngameState.UIRoot.Children[1].Children[18];
+                var baseWindow = CharacterData.Core.Core.MainPlugin.GameController.IngameState.UIRoot.Children[1].Children[child];
                 if (baseWindow != null)
                 {
                     var partElementList = baseWindow.Children[0].Children[0].Children;

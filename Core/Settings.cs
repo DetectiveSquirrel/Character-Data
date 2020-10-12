@@ -159,5 +159,7 @@ namespace CharacterData.Core
         public HotkeyNode InventoryHotkey { get; set; } = new HotkeyNode(Keys.F);
 
         public ToggleNode Enable { get; set; } = new ToggleNode(true);
+
+        public RangeNode<int> PartyElement { get; set; } = new RangeNode<int>(20, 0, 300);
     }
 }

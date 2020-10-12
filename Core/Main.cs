@@ -294,7 +294,7 @@ namespace CharacterData.Core
             DrawDelveInfo();
             DrawExperiencepercentbar();
 
-            PlayerInPartyDraw = PartyElements.GetPlayerInfoElementList(PlayerEntities);
+            PlayerInPartyDraw = PartyElements.GetPlayerInfoElementList(PlayerEntities, Settings.PartyElement.Value);
 
             foreach (var partyElementWindow in PlayerInPartyDraw)
             {
