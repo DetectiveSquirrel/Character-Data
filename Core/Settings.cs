@@ -154,9 +154,16 @@ namespace CharacterData.Core
         public bool PlayerResTree { get; set; }
 
         public bool InstaceInfoTree { get; set; }
+        public ToggleNode DeployedActorObjects { get; set; } = new ToggleNode(false);
 
-        public HotkeyNode StashToggleHotkey { get; set; } = new HotkeyNode(Keys.F1);
-        public HotkeyNode InventoryHotkey { get; set; } = new HotkeyNode(Keys.F);
+        public ColorNode ActorObjectColor { get; set; } = new ColorNode(Color.White);
+
+        public RangeNode<int> ActorObjectX { get; set; } = new RangeNode<int>(500, 0, 2560);
+
+        public RangeNode<int> ActorObjectY { get; set; } = new RangeNode<int>(500, 0, 2560);
+
+        public HotkeyNode StashToggleHotkey { get; set; } = new HotkeyNode(Keys.None);
+        public HotkeyNode InventoryHotkey { get; set; } = new HotkeyNode(Keys.None);
 
         public ToggleNode Enable { get; set; } = new ToggleNode(true);
 

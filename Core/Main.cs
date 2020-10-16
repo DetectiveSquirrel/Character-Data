@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using CharacterData.Libs;
@@ -25,6 +26,7 @@ using Newtonsoft.Json;
 using SharpDX;
 using SharpDX.Direct3D11;
 using Typing_Buttons.Utils;
+using DeployedObject = ExileCore.PoEMemory.Components.DeployedObject;
 
 namespace CharacterData.Core
 {
@@ -305,6 +307,7 @@ namespace CharacterData.Core
             DrawResistances();
             DrawDelveInfo();
             DrawExperiencepercentbar();
+            DrawDeployedActorObjects();
 
             PlayerInPartyDraw = PartyElements.GetPlayerInfoElementList(PlayerEntities, Settings.PartyElement.Value);
 
@@ -457,7 +460,7 @@ namespace CharacterData.Core
 
         private void DrawDelveInfo()
         {
-            if (!(bool) Settings.Delveinfo)
+            if (!(bool)Settings.Delveinfo)
                 return;
 
             var sulphiteCount = GameController.Game.IngameState.ServerData.CurrentSulphiteAmount;
@@ -470,6 +473,51 @@ namespace CharacterData.Core
             catch
             {
             }
+        }
+
+        private void DrawDeployedActorObjects()
+        {
+            if (!Settings.DeployedActorObjects.Value)
+                return;
+
+            var newList = GameController.Player.GetComponent<Actor>().DeployedObjects;
+
+
+            try
+            {
+                var actorDeployedObjects = DeployedObjectsSorted(newList).Reverse();
+                var loopCount = 0;
+
+                foreach (var actorDeployedObject in actorDeployedObjects)
+                {
+                    Graphics.DrawText($@"{actorDeployedObject.Value.ToString().PadRight(2, ' ')}: {actorDeployedObject.Key}", 
+                        new Vector2(Settings.ActorObjectX, Settings.ActorObjectY - Settings.ResistanceTextSize * loopCount), Settings.ActorObjectColor, 
+                        FontAlign.Left);
+                    loopCount++;
+                }
+
+            }
+            catch (Exception e)
+            {
+                LogError(e.ToString(), 10);
+            }
+        }
+
+        public SortedDictionary<string, int> DeployedObjectsSorted(List<DeployedObject> objectList)
+        {
+            var listCopy = objectList;
+
+            SortedDictionary<string, int> actorDeployedObjects = new SortedDictionary<string, int>();
+
+            foreach (var deployedObject in listCopy.Where(deployedObject => deployedObject.Entity != null && deployedObject.Entity.Address != 0 && !string.IsNullOrEmpty(deployedObject.Entity.RenderName)))
+            {
+                if (actorDeployedObjects.ContainsKey(deployedObject.Entity.RenderName))
+                    actorDeployedObjects[deployedObject.Entity.RenderName]++;
+                else
+                    actorDeployedObjects.Add(deployedObject.Entity.RenderName, 1);
+            }
+
+            return actorDeployedObjects;
         }
 
         private static int ResistanceDifference(object cappedResistance, object uncappedResistance, object maximumCappedResistance)
