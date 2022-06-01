@@ -128,6 +128,33 @@ namespace CharacterData.Core
 
         public override void DrawSettings()
         {
+            if (ImGui.TreeNode("Player Kill Leaderboard"))
+            {
+                var entities = GameController.EntityListWrapper.Entities;
+                Dictionary<string, int> nameToKillsList = new Dictionary<string, int>();
+
+                foreach (var entity in entities)
+                {
+                    if (entity.Type == EntityType.Player)
+                    {
+                        var playerComp = entity.GetComponent<Player>();
+                        if (playerComp.PlayerName != LocalPlayer.Name)
+                            nameToKillsList.Add($"{playerComp.PlayerName.PadRight(23, ' ')} ({playerComp.Level})", TryGetStat("character_kill_count", entity));
+                    }
+                }
+
+                var sortedDict = from entry in nameToKillsList orderby entry.Value descending select entry;
+
+                foreach (var item in sortedDict)
+                {
+                    ImGui.BulletText($"{item.Key}: {string.Format("{0:#,##0}", item.Value)}");
+                }
+
+                ImGui.TreePop();
+            }
+
+            ImGui.Separator();
+
             base.DrawSettings();
             ImGui.BulletText("Stash Toggle writes to memory, use with caution");
             ImGui.BulletText("CAREFUL!!!!! ");
@@ -136,6 +163,8 @@ namespace CharacterData.Core
             ImGui.BulletText("CAREFUL!!!!! ");
             ImGui.BulletText("CAREFUL!!!!! ");
             ImGui.BulletText("CAREFUL!!!!! ");
+
+
         }
 
         //public override void DrawSettings()
