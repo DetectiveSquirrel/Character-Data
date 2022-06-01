@@ -30,11 +30,12 @@ namespace CharacterData.Core
             Resistances = new ToggleNode(true);
             ResistanceX = new RangeNode<int>(913, 0, 2000);
             ResistanceY = new RangeNode<int>(980, 0, 2000);
-            ResistanceTextSize = 17;
+            ResistanceTextSize = new RangeNode<int>(16, 12, 36);
             FireResistanceColor = new ColorBGRA(byte.MaxValue, 85, 85, byte.MaxValue);
             ColdResistanceColor = new ColorBGRA(77, 134, byte.MaxValue, byte.MaxValue);
             LightningResistanceColor = new ColorBGRA(253, 245, 75, byte.MaxValue);
             ChaosResistanceColor = new ColorBGRA(byte.MaxValue, 91, 179, byte.MaxValue);
+            KillsColor = new ColorBGRA(byte.MaxValue, 91, 179, byte.MaxValue);
             LevelToggle = new ToggleNode(true);
             ExperienceBar = new ToggleNode(true);
             LastAreaDuration = new RangeNode<int>(600, 1, 1200);
@@ -60,10 +61,12 @@ namespace CharacterData.Core
             Delveinfo = new ToggleNode(true);
             DelveinfoX = new RangeNode<int>(913, 0, 2000);
             DelveinfoY = new RangeNode<int>(980, 0, 2000);
-            DelveinfoTextSize = 17;
+            DelveTextSpacing = new RangeNode<int>(16, 12, 36);
             DelveinfoSulphiteColor = new ColorBGRA(byte.MaxValue, 85, 85, byte.MaxValue);
             DelveinfoAzuriteColor = new ColorBGRA(byte.MaxValue, 85, 85, byte.MaxValue);
-            
+
+            ScourgeJuiceColor = new ColorBGRA(byte.MaxValue, 0, 0, byte.MaxValue);
+
         }
 
         public ToggleNode HealthToggle { get; set; }
@@ -100,10 +103,11 @@ namespace CharacterData.Core
 
         public ColorNode DelveinfoSulphiteColor { get; set; }
         public ColorNode DelveinfoAzuriteColor { get; set; }
+        public ColorNode ScourgeJuiceColor { get; set; }
 
-        public int DelveinfoTextSize { get; set; }
+        public RangeNode<int> DelveTextSpacing { get; set; }
 
-        public int ResistanceTextSize { get; set; }
+        public RangeNode<int> ResistanceTextSize { get; set; }
 
         public ColorNode FireResistanceColor { get; set; }
 
@@ -112,6 +116,8 @@ namespace CharacterData.Core
         public ColorNode LightningResistanceColor { get; set; }
 
         public ColorNode ChaosResistanceColor { get; set; }
+
+        public ColorNode KillsColor { get; set; }
 
         public ToggleNode LevelToggle { get; set; }
 
@@ -162,6 +168,11 @@ namespace CharacterData.Core
 
         public RangeNode<int> ActorObjectY { get; set; } = new RangeNode<int>(500, 0, 2560);
 
+        public RangeNode<int> SoulGainPrevX { get; set; } = new RangeNode<int>(500, 0, 2560);
+
+        public RangeNode<int> SoulGainPrevY { get; set; } = new RangeNode<int>(500, 0, 2560);
+
+        public ColorNode SoulGainPrevColor { get; set; } = new ColorNode(Color.Red);
         public HotkeyNode StashToggleHotkey { get; set; } = new HotkeyNode(Keys.None);
         public HotkeyNode InventoryHotkey { get; set; } = new HotkeyNode(Keys.None);
 

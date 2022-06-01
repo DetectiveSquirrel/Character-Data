@@ -77,7 +77,8 @@ namespace CharacterData.Utils
                             CurrentLevelPercent = Core.Core.Instance.Progress(),
                             ExperiencedGained = Core.Core.Instance.ExperienceGained(),
                             ExperienceGainedPercent = Core.Core.Instance.LevelPercentGained(),
-                            LevelUps = (int)(Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinLevel)
+                            LevelUps = (int)(Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinLevel),
+                            AreaKills = (Core.Core.LocalPlayer.Kills - Core.Core.Instance.JoinKills)
                         },
                         Area = new Area
                         {

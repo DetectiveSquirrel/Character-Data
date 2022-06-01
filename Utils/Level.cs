@@ -22,7 +22,10 @@ namespace CharacterData.Utils
     [JsonProperty("ExperienceGainedPercent")]
     public string ExperienceGainedPercent { get; set; }
 
-    [JsonProperty("LevelUps")]
-    public int LevelUps { get; set; }
-  }
+        [JsonProperty("LevelUps")]
+        public int LevelUps { get; set; }
+
+        [JsonProperty("AreaKills")]
+        public int AreaKills { get; set; }
+    }
 }

@@ -7,9 +7,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Windows.Forms;
 using CharacterData.Libs;
@@ -35,7 +37,6 @@ namespace CharacterData.Core
 
 
         public static Core MainPlugin { get; set; }
-        public static PartyElements partyStuff { get; set; }
 
         public List<Entity> PlayerEntities { get; set; } = new List<Entity>();
 
@@ -71,6 +72,10 @@ namespace CharacterData.Core
 
         public int MaxChaosRes { get; private set; }
 
+        public int Kills { get; private set; }
+
+        public List<Buff> buffs;
+
         internal MemoryEditor PoeProcessConnection { get; private set; }
 
         private static bool ShouldLog
@@ -88,7 +93,7 @@ namespace CharacterData.Core
 
         public int TryGetStat(string playerStat)
         {
-            return !GameController.EntityListWrapper.Player.Stats.TryGetValue((GameStat) GameController.Files.Stats.records[playerStat].ID, out var statValue) ? 0 : statValue;
+            return !GameController.EntityListWrapper.Player.Stats.TryGetValue((GameStat)GameController.Files.Stats.records[playerStat].ID, out var statValue) ? 0 : statValue;
         }
 
         public override void AreaChange(AreaInstance area)
@@ -100,9 +105,12 @@ namespace CharacterData.Core
         private void ResetData()
         {
             LogRun();
+
+            //GameController.Area.ForceRefreshArea(true);
             //yield return new WaitFunction(() => !Entity.Player.IsValid);
             Instance = new InstanceSnapshot();
             Run = new LogRun();
+
         }
 
         public override bool Initialise()
@@ -111,22 +119,11 @@ namespace CharacterData.Core
             MainPlugin = this;
             Instance = new InstanceSnapshot();
             Run = new LogRun();
-            partyStuff = new PartyElements(this);
             PoeProcessConnection = new MemoryEditor(GameController.Window.Process.Id);
+
+            //Fix init of stat later, im fucking lazy kekw.
+            Kills = TryGetStat("character_kill_count");
             return true;
-        }
-
-        public override void EntityAdded(Entity entityWrapper)
-        {
-            if (entityWrapper.HasComponent<Player>())
-            {
-                PlayerEntities.Add(entityWrapper);
-            }
-        }
-
-        public override void EntityRemoved(Entity entityWrapper)
-        {
-            PlayerEntities.Remove(entityWrapper);
         }
 
         public override void DrawSettings()
@@ -204,7 +201,7 @@ namespace CharacterData.Core
         //        Settings.Delveinfo = ImGuiExtension.Checkbox("Delve Info UI (" + (Settings.Delveinfo ? "Show" : "Hide") + ")", Settings.Delveinfo);
         //        Settings.DelveinfoX.Value = ImGuiExtension.IntSlider("Delveinfo X", Settings.DelveinfoX);
         //        Settings.DelveinfoY.Value = ImGuiExtension.IntSlider("Delveinfo Y", Settings.DelveinfoY);
-        //        Settings.DelveinfoTextSize = ImGuiExtension.IntSlider("Delveinfo Text Size", Settings.DelveinfoTextSize, 1, 40);
+        //        Settings.DelveTextSpacing = ImGuiExtension.IntSlider("Delveinfo Text Size", Settings.DelveTextSpacing, 1, 40);
         //        ImGui.Spacing();
         //        Settings.DelveinfoSulphiteColor = ImGuiExtension.ColorPicker("Sulphite Color", Settings.DelveinfoSulphiteColor);
         //        Settings.DelveinfoAzuriteColor = ImGuiExtension.ColorPicker("Azurite Color", Settings.DelveinfoAzuriteColor);
@@ -298,8 +295,11 @@ namespace CharacterData.Core
 
         public override void Render()
         {
-            if (Settings.StashToggleHotkey.PressedOnce())
-                OpenStashInTown();
+
+            buffs = LocalPlayer.Entity.GetComponent<Buffs>().BuffsList;
+
+            //if (Settings.StashToggleHotkey.PressedOnce())
+            //    OpenStashInTown();
 
             Background();
             GlobePercents();
@@ -309,13 +309,27 @@ namespace CharacterData.Core
             DrawExperiencepercentbar();
             DrawDeployedActorObjects();
 
-            PlayerInPartyDraw = PartyElements.GetPlayerInfoElementList(PlayerEntities, Settings.PartyElement.Value);
+            Kills = TryGetStat("character_kill_count");
+
+            // VLS Soul Gain Prevention Timer, you know....for fuck ups.
+            var buffOut = buffs.FirstOrDefault(buff => buff.Name == "cannot_gain_souls");
+            if (buffOut != null && buffOut.Timer > 0.0)
+            {
+                Graphics.DrawText($"Soul Gain Prevention\n{buffOut.Timer:0.##}",
+                    new Vector2(Settings.SoulGainPrevX, Settings.SoulGainPrevY),
+                    Settings.SoulGainPrevColor);
+            }
+
+            var playerEntities = GameController.EntityListWrapper.ValidEntitiesByType[EntityType.Player];
+            PlayerInPartyDraw = PartyElements.GetPlayerInfoElementList(playerEntities, Settings.PartyElement.Value);
 
             foreach (var partyElementWindow in PlayerInPartyDraw)
             {
                 var fontSize = 13;
-                if (partyElementWindow.Data?.PlayerEntity?.IsValid != null && !GameController.Game.IngameState.IngameUi.OpenLeftPanel.IsVisible)
+                if (partyElementWindow.Data?.PlayerEntity?.IsValid != null && !GameController.Game.IngameState.IngameUi.OpenLeftPanel.IsVisibleLocal)
                 {
+                    var statCount = 1;
+
                     var playerComp = partyElementWindow.Data.PlayerEntity.GetComponent<Player>();
                     var levelString = $"Level: {playerComp.Level} ({Progress(partyElementWindow.Data.PlayerEntity):N2}%)";
 
@@ -331,6 +345,15 @@ namespace CharacterData.Core
                     var ChaosRes = TryGetStat("chaos_damage_resistance_%", partyElementWindow.Data.PlayerEntity);
                     var chaosString = $"Chaos: {ChaosRes}";
 
+                    var lifeComp = partyElementWindow.Data.PlayerEntity.GetComponent<Life>();
+                    var lifeString = $"HP: {lifeComp.CurHP} / ES {lifeComp.CurES}";
+
+                    var actionComp = partyElementWindow.Data.PlayerEntity.GetComponent<Actor>();
+                    var actorString = $"Action: {actionComp.Action}";
+
+                    var killComp = partyElementWindow.Data.PlayerEntity.GetComponent<Actor>();
+                    var killString = $"Kills: {string.Format("{0:#,##0}", TryGetStat("character_kill_count", partyElementWindow.Data.PlayerEntity))}";
+
 
                     var xy = partyElementWindow.Element.GetClientRect().TopRight;
                     var LevelText = Graphics.DrawText(
@@ -339,32 +362,52 @@ namespace CharacterData.Core
                         xy,
                         Settings.LevelTextColor);
 
+                    statCount++;
                     xy.Y += (fontSize);
                     Graphics.DrawText(fireString,
                         //fontSize,
                         xy,
                         Settings.FireResistanceColor);
 
+                    statCount++;
                     xy.Y += (fontSize);
                     Graphics.DrawText(coldString,
                         //fontSize,
                         xy,
                         Settings.ColdResistanceColor);
 
+                    statCount++;
                     xy.Y += (fontSize);
                     Graphics.DrawText(lightString,
                         //fontSize,
                         xy,
                         Settings.LightningResistanceColor);
 
+                    statCount++;
                     xy.Y += (fontSize);
-                    var chaosText = Graphics.DrawText(chaosString,
+                    Graphics.DrawText(chaosString,
                         //fontSize,
                         xy,
                         Settings.ChaosResistanceColor);
 
-                    var partyinfoRec = new RectangleF(partyElementWindow.Element.GetClientRect().TopRight.X, partyElementWindow.Element.GetClientRect().TopRight.Y, LevelText.X, fontSize * 5);
+                    statCount++;
+                    xy.Y += (fontSize);
+                    Graphics.DrawText(lifeString,
+                        //fontSize,
+                        xy,
+                        Color.White);
+
+                    statCount++;
+                    xy.Y += (fontSize);
+                    Graphics.DrawText(killString,
+                        //fontSize,
+                        xy,
+                        Color.White);
+
+                    var partyinfoRec = new RectangleF(partyElementWindow.Element.GetClientRect().TopRight.X, partyElementWindow.Element.GetClientRect().TopRight.Y, LevelText.X, fontSize * statCount);
                     Graphics.DrawBox(partyinfoRec, new Color(0, 0, 0, 185));
+
+
                 }
             }
         }
@@ -401,6 +444,7 @@ namespace CharacterData.Core
             Run.Message(Settings.LastAreaDuration.Value);
             Run.NewEntry();
             Run.Save();
+
         }
 
         private void DrawExperienceData()
@@ -455,7 +499,8 @@ namespace CharacterData.Core
             Graphics.DrawText($"{"Fire:".PadRight(8, ' ')}{FireRes.ToString().PadRight(5, ' ')}({(num1 > 0 ? "+" + num1 : num1.ToString())})",  new Vector2(Settings.ResistanceX, Settings.ResistanceY), Settings.FireResistanceColor, FontAlign.Left);
             Graphics.DrawText($"{"Cold:".PadRight(8, ' ')}{ColdRes.ToString().PadRight(5, ' ')}({(num2 > 0 ? "+" + num2 : num2.ToString())})",  new Vector2(Settings.ResistanceX, Settings.ResistanceY + Settings.ResistanceTextSize), Settings.ColdResistanceColor, FontAlign.Left);
             Graphics.DrawText($"{"Light:".PadRight(8, ' ')}{LightRes.ToString().PadRight(5, ' ')}({(num3 > 0 ? "+" + num3 : num3.ToString())})",  new Vector2(Settings.ResistanceX, Settings.ResistanceY + Settings.ResistanceTextSize * 2), Settings.LightningResistanceColor, FontAlign.Left);
-            Graphics.DrawText($"{"Chaos:".PadRight(8, ' ')}{ChaosRes.ToString().PadRight(5, ' ')}({(num4 > 0 ? "+" + num4 : num4.ToString())})",  new Vector2(Settings.ResistanceX, Settings.ResistanceY + Settings.ResistanceTextSize * 3), Settings.ChaosResistanceColor, FontAlign.Left);
+            Graphics.DrawText($"{"Chaos:".PadRight(8, ' ')}{ChaosRes.ToString().PadRight(5, ' ')}({(num4 > 0 ? "+" + num4 : num4.ToString())})", new Vector2(Settings.ResistanceX, Settings.ResistanceY + Settings.ResistanceTextSize * 3), Settings.ChaosResistanceColor, FontAlign.Left);
+            Graphics.DrawText($"{"Kills:".PadRight(8, ' ')}{string.Format("{0:#,##0}", Core.LocalPlayer.Kills - Core.Instance.JoinKills).PadRight(5, ' ')}", new Vector2(Settings.ResistanceX, Settings.ResistanceY + Settings.ResistanceTextSize * 4), Settings.KillsColor, FontAlign.Left);
         }
 
         private void DrawDelveInfo()
@@ -465,10 +510,12 @@ namespace CharacterData.Core
 
             var sulphiteCount = GameController.Game.IngameState.ServerData.CurrentSulphiteAmount;
             var azuriteCount = GameController.Game.IngameState.ServerData.CurrentAzuriteAmount;
+            //var ScourgeJuice = GameController.Game.IngameState.ServerData.ScourgeFuel;
             try
             {
-                Graphics.DrawText($"{"Sulphite: ".PadRight(11, ' ')}{sulphiteCount:#,##0}", new Vector2(Settings.DelveinfoX, Settings.DelveinfoY), Settings.DelveinfoSulphiteColor);
-                Graphics.DrawText($"{"Azurite: ".PadRight(11, ' ')}{azuriteCount:#,##0}", new Vector2(Settings.DelveinfoX, Settings.DelveinfoY + Settings.DelveinfoTextSize), Settings.DelveinfoAzuriteColor);
+                Graphics.DrawText($"{"Sulphite: ".PadRight(14, ' ')}{sulphiteCount:#,##0}", new Vector2(Settings.DelveinfoX, Settings.DelveinfoY), Settings.DelveinfoSulphiteColor);
+                Graphics.DrawText($"{"Azurite: ".PadRight(14, ' ')}{azuriteCount:#,##0}", new Vector2(Settings.DelveinfoX, Settings.DelveinfoY + Settings.DelveTextSpacing), Settings.DelveinfoAzuriteColor);
+                //Graphics.DrawText($"{"Scourge Fuel: ".PadRight(14, ' ')}{ScourgeJuice:0.##%}", new Vector2(Settings.DelveinfoX, Settings.DelveinfoY + Settings.DelveTextSpacing + Settings.DelveTextSpacing), Settings.ScourgeJuiceColor);
             }
             catch
             {
@@ -545,7 +592,7 @@ namespace CharacterData.Core
             }
             else
             {
-                PoeProcessConnection.WriteInteger(stashPanel.Address + 0x111, -16759277);
+                PoeProcessConnection.WriteInteger(stashPanel.Address + 0x11, -16759277);
                 if (!inventoryPanel.IsVisible || (Keys) Settings.InventoryHotkey == Keys.None)
                     return;
                 Keyboard.KeyPress((Keys)Settings.InventoryHotkey);
@@ -584,13 +631,12 @@ namespace CharacterData.Core
 
             public static Life Health => Entity.GetComponent<Life>();
 
+            public static int Kills => MainPlugin.Kills;
+
             public static AreaInstance Area => MainPlugin.GameController.Area.CurrentArea;
 
             public static uint AreaHash => MainPlugin.GameController.Game.IngameState.Data.CurrentAreaHash;
 
-            //public static Vector2 PlayerToScreen => MainPlugin.GameController.Game.IngameState.Camera.WorldToScreen(Entity.Pos.Translate(0.0f, 0.0f), Entity);
-
-            public static bool HasBuff(string buffName) => Entity.GetComponent<Life>().HasBuff(buffName);
         }
     }
 }

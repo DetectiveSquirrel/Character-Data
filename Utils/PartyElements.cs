@@ -54,7 +54,7 @@ namespace CharacterData.Utils
 
             try
             {
-                var baseWindow = CharacterData.Core.Core.MainPlugin.GameController.IngameState.UIRoot.Children[1].Children[child];
+                var baseWindow = CharacterData.Core.Core.MainPlugin.GameController.IngameState.IngameUi.PartyElement;
                 if (baseWindow != null)
                 {
                     var partElementList = baseWindow.Children[0].Children[0].Children;
@@ -80,6 +80,9 @@ namespace CharacterData.Utils
                             //get party element
                             newElement.Element = partyElement;
 
+                            //party element swirly tp thingo
+                            newElement.TPButton = partyElement?.Children[partyElement?.ChildCount == 4 ? 3 : 2];
+
                             playersInParty.Add(newElement);
                         }
                     }
@@ -99,6 +102,7 @@ namespace CharacterData.Utils
         public string PlayerName { get; set; } = Empty;
         public PlayerData Data { get; set; } = new PlayerData();
         public Element Element { get; set; } = new Element();
+        public Element TPButton { get; set; } = new Element();
 
         public override string ToString()
         {

@@ -20,6 +20,7 @@ namespace CharacterData.Utils
             JoinTime = DateTime.Now;
             JoinArea = Core.Core.LocalPlayer.Area;
             JoinAreaHash = Core.Core.LocalPlayer.AreaHash;
+            JoinKills = Core.Core.LocalPlayer.Kills;
         }
 
         public long JoinExperience { get; set; }
@@ -34,6 +35,8 @@ namespace CharacterData.Utils
 
         public uint JoinAreaHash { get; set; }
 
+        public int JoinKills { get; set; }
+
         public double Progress()
         {
             if (Core.Core.LocalPlayer.Level != 100)
@@ -44,6 +47,11 @@ namespace CharacterData.Utils
         public long ExperienceGained()
         {
             return Core.Core.LocalPlayer.Experience - JoinExperience;
+        }
+
+        public long KillsInArea()
+        {
+            return Core.Core.LocalPlayer.Kills - JoinKills;
         }
 
         public string LevelPercentGained()
