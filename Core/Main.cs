@@ -130,17 +130,14 @@ namespace CharacterData.Core
         {
             if (ImGui.TreeNode("Player Kill Leaderboard"))
             {
-                var entities = GameController.EntityListWrapper.Entities;
+                var entities = GameController.EntityListWrapper.ValidEntitiesByType[EntityType.Player];
                 Dictionary<string, int> nameToKillsList = new Dictionary<string, int>();
 
                 foreach (var entity in entities)
                 {
-                    if (entity.Type == EntityType.Player)
-                    {
-                        var playerComp = entity.GetComponent<Player>();
-                        if (playerComp.PlayerName != LocalPlayer.Name)
-                            nameToKillsList.Add($"{playerComp.PlayerName.PadRight(23, ' ')} ({playerComp.Level})", TryGetStat("character_kill_count", entity));
-                    }
+                    var playerComp = entity.GetComponent<Player>();
+                    if (playerComp.PlayerName != LocalPlayer.Name)
+                        nameToKillsList.Add($"{playerComp.PlayerName.PadRight(23, ' ')} ({playerComp.Level})", TryGetStat("character_kill_count", entity));
                 }
 
                 var sortedDict = from entry in nameToKillsList orderby entry.Value descending select entry;
