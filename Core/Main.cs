@@ -529,7 +529,7 @@ namespace CharacterData.Core
             Graphics.DrawText($"{"Cold:".PadRight(8, ' ')}{ColdRes.ToString().PadRight(5, ' ')}({(num2 > 0 ? "+" + num2 : num2.ToString())})",  new Vector2(Settings.ResistanceX, Settings.ResistanceY + Settings.ResistanceTextSize), Settings.ColdResistanceColor, FontAlign.Left);
             Graphics.DrawText($"{"Light:".PadRight(8, ' ')}{LightRes.ToString().PadRight(5, ' ')}({(num3 > 0 ? "+" + num3 : num3.ToString())})",  new Vector2(Settings.ResistanceX, Settings.ResistanceY + Settings.ResistanceTextSize * 2), Settings.LightningResistanceColor, FontAlign.Left);
             Graphics.DrawText($"{"Chaos:".PadRight(8, ' ')}{ChaosRes.ToString().PadRight(5, ' ')}({(num4 > 0 ? "+" + num4 : num4.ToString())})", new Vector2(Settings.ResistanceX, Settings.ResistanceY + Settings.ResistanceTextSize * 3), Settings.ChaosResistanceColor, FontAlign.Left);
-            Graphics.DrawText($"{"Kills:".PadRight(8, ' ')}{string.Format("{0:#,##0}", Core.LocalPlayer.Kills - Core.Instance.JoinKills).PadRight(5, ' ')}", new Vector2(Settings.ResistanceX, Settings.ResistanceY + Settings.ResistanceTextSize * 4), Settings.KillsColor, FontAlign.Left);
+            Graphics.DrawText($"{"Kills:".PadRight(8, ' ')}{string.Format("{0:#,##0}", Core.LocalPlayer.Kills)}", new Vector2(Settings.ResistanceX, Settings.ResistanceY + Settings.ResistanceTextSize * 4), Settings.KillsColor, FontAlign.Left);
         }
 
         private void DrawDelveInfo()
