@@ -27,5 +27,8 @@ namespace CharacterData.Utils
 
         [JsonProperty("AreaKills")]
         public int AreaKills { get; set; }
+
+        [JsonProperty("TotalKills")]
+        public int TotalKills { get; set; }
     }
 }

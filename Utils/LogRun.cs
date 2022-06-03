@@ -39,7 +39,7 @@ namespace CharacterData.Utils
                 if (full)
                     str1 += string.Format("{0}: ", DateTime.Now.ToString());
                 var str2 = str1 + string.Format(
-                               "[Level: {0} ({1:N2}%)] [Gained XP: {2:#,##0} ({3}%)] [Area Dif: {5}] [Areas ETA: {4}/{6}] [Kills: {7:#,##0}]",
+                               "[Level: {0} ({1:N2}%)] [Gained XP: {2:#,##0} ({3}%)] [Area Dif: {5}] [Areas ETA: {4}/{6}] [Kills: {7:#,##0} | Total Kills: {8:#,##0}]",
                                 Core.Core.LocalPlayer.Level, Core.Core.Instance.Progress(),
                                 Core.Core.Instance.ExperienceGained(), Core.Core.Instance.LevelPercentGained(),
                                Core.Core.Instance.RunsToNextLevel(),
@@ -48,7 +48,7 @@ namespace CharacterData.Utils
                                        Core.Core.LocalPlayer.Level - Core.Core.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel)
                                    : (Core.Core.LocalPlayer.Level - Core.Core.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel).ToString(),
                                Core.Core.Instance.TotalRunsToNextLevel(),
-                           Core.Core.LocalPlayer.Kills - Core.Core.Instance.JoinKills);
+                           Core.Core.LocalPlayer.Kills - Core.Core.Instance.JoinKills, Core.Core.LocalPlayer.Kills);
                 if (Core.Core.LocalPlayer.Name == Core.Core.Instance.JoinName && Core.Core.Instance.JoinLevel < Core.Core.LocalPlayer.Level)
                     str2 += string.Format(" [Level Ups: {0}]", Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinLevel);
                 if (full)
@@ -79,7 +79,8 @@ namespace CharacterData.Utils
                             ExperiencedGained = Core.Core.Instance.ExperienceGained(),
                             ExperienceGainedPercent = Core.Core.Instance.LevelPercentGained(),
                             LevelUps = (int)(Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinLevel),
-                            AreaKills = (Core.Core.LocalPlayer.Kills - Core.Core.Instance.JoinKills)
+                            AreaKills = (Core.Core.LocalPlayer.Kills - Core.Core.Instance.JoinKills),
+                            TotalKills = Core.Core.LocalPlayer.Kills
                         },
                         Area = new Area
                         {
