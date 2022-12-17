@@ -1,4 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
+// Decompiled with JetBrains decompiler
 // Type: CharacterData.Core.Settings
 // Assembly: CharacterData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // MVID: 74E598EA-D86C-4665-83EF-E2CAA5899D71
@@ -167,12 +167,19 @@ namespace CharacterData.Core
         public RangeNode<int> ActorObjectX { get; set; } = new RangeNode<int>(500, 0, 2560);
 
         public RangeNode<int> ActorObjectY { get; set; } = new RangeNode<int>(500, 0, 2560);
+        public ToggleNode SoulgainPrev { get; set; } = new ToggleNode(false);
 
         public RangeNode<int> SoulGainPrevX { get; set; } = new RangeNode<int>(500, 0, 2560);
 
         public RangeNode<int> SoulGainPrevY { get; set; } = new RangeNode<int>(500, 0, 2560);
+        public ToggleNode Wardloop { get; set; } = new ToggleNode(false);
+
+        public RangeNode<int> WardLoopX { get; set; } = new RangeNode<int>(500, 0, 2560);
+
+        public RangeNode<int> WardLoopY { get; set; } = new RangeNode<int>(500, 0, 2560);
 
         public ColorNode SoulGainPrevColor { get; set; } = new ColorNode(Color.Red);
+        public ColorNode WardloopColor { get; set; } = new ColorNode(Color.Red);
         public HotkeyNode StashToggleHotkey { get; set; } = new HotkeyNode(Keys.None);
         public HotkeyNode InventoryHotkey { get; set; } = new HotkeyNode(Keys.None);
 
