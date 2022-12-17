@@ -1,4 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
+// Decompiled with JetBrains decompiler
 // Type: CharacterData.Core.Main
 // Assembly: CharacterData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // MVID: 74E598EA-D86C-4665-83EF-E2CAA5899D71
@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Windows.Forms;
@@ -29,6 +30,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using Typing_Buttons.Utils;
 using DeployedObject = ExileCore.PoEMemory.Components.DeployedObject;
+using Vector2 = System.Numerics.Vector2;
 
 namespace CharacterData.Core
 {
@@ -337,13 +339,30 @@ namespace CharacterData.Core
 
             Kills = TryGetStat("character_kill_count");
 
-            // VLS Soul Gain Prevention Timer, you know....for fuck ups.
-            var buffOut = buffs.FirstOrDefault(buff => buff.Name == "cannot_gain_souls");
-            if (buffOut != null && buffOut.Timer > 0.0)
+            if (Settings.SoulgainPrev)
             {
-                Graphics.DrawText($"Soul Gain Prevention\n{buffOut.Timer:0.##}",
-                    new Vector2(Settings.SoulGainPrevX, Settings.SoulGainPrevY),
-                    Settings.SoulGainPrevColor);
+                // VLS Soul Gain Prevention Timer, you know....for fuck ups.
+                var buffOut = buffs.FirstOrDefault(buff => buff.Name == "cannot_gain_souls");
+                if (buffOut != null && buffOut.Timer > 0.0)
+                {
+                    Graphics.DrawText($"Soul Gain Prevention\n{buffOut.Timer:0.##}",
+                        new Vector2(Settings.SoulGainPrevX, Settings.SoulGainPrevY),
+                        Settings.SoulGainPrevColor);
+                }
+            }
+
+            if (Settings.Wardloop && !GameController.Area.CurrentArea.IsTown)
+                {
+                // Wardloop, you know....for fuck ups.
+                var wardloopBuffOut = buffs.FirstOrDefault(buff => buff.Name == "flask_bonus_ward_not_break");
+                if (wardloopBuffOut == null)
+                {
+                    Graphics.DrawText($"WARDLOOP BAD",
+                        new Vector2(Settings.WardLoopX, Settings.WardLoopY),
+                        Settings.WardloopColor, "ProggyClean:46", FontAlign.Center);
+
+                    //keyboard event handler that blocks a certain key
+                }
             }
 
             var playerEntities = GameController.EntityListWrapper.ValidEntitiesByType[EntityType.Player];
