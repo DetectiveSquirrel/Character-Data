@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using CharacterData.Libs;
@@ -27,10 +28,11 @@ using ExileCore.Shared.Helpers;
 using ImGuiNET;
 using Newtonsoft.Json;
 using SharpDX;
-using SharpDX.Direct3D11;
 using Typing_Buttons.Utils;
+using static System.Net.Mime.MediaTypeNames;
 using DeployedObject = ExileCore.PoEMemory.Components.DeployedObject;
 using Vector2 = System.Numerics.Vector2;
+using Vector3 = System.Numerics.Vector3;
 
 namespace CharacterData.Core
 {
@@ -84,8 +86,9 @@ namespace CharacterData.Core
         {
             get
             {
-                return LocalPlayer.Experience != Instance.JoinExperience;
+                return LocalPlayer.Experience != Instance.JoinExperience || LocalPlayer.Kills != Instance.JoinKills;
             }
+
         }
 
         public int TryGetStat(string playerStat, Entity entity)
@@ -119,12 +122,12 @@ namespace CharacterData.Core
         {
             BasePluginDirectory = DirectoryFullName;
             MainPlugin = this;
+            Kills = TryGetStat("character_kill_count");
             Instance = new InstanceSnapshot();
             Run = new LogRun();
             PoeProcessConnection = new MemoryEditor(GameController.Window.Process.Id);
 
             //Fix init of stat later, im fucking lazy kekw.
-            Kills = TryGetStat("character_kill_count");
             return true;
         }
 
@@ -582,8 +585,8 @@ namespace CharacterData.Core
 
                 foreach (var actorDeployedObject in actorDeployedObjects)
                 {
-                    Graphics.DrawText($@"{actorDeployedObject.Value.ToString().PadRight(2, ' ')}: {actorDeployedObject.Key}", 
-                        new Vector2(Settings.ActorObjectX, Settings.ActorObjectY - Settings.ResistanceTextSize * loopCount), Settings.ActorObjectColor, 
+                    Graphics.DrawText($@"{actorDeployedObject.Value.ToString().PadRight(2, ' ')}: {actorDeployedObject.Key}",
+                        new Vector2(Settings.ActorObjectX, Settings.ActorObjectY - Settings.ResistanceTextSize * loopCount), Settings.ActorObjectColor,
                         FontAlign.Left);
                     loopCount++;
                 }

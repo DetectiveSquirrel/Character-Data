@@ -57,134 +57,108 @@ namespace CharacterData.Core
             MpTree = false;
             PlayerResTree = false;
             InstaceInfoTree = false;
-
             Delveinfo = new ToggleNode(true);
             DelveinfoX = new RangeNode<int>(913, 0, 2000);
             DelveinfoY = new RangeNode<int>(980, 0, 2000);
             DelveTextSpacing = new RangeNode<int>(16, 12, 36);
             DelveinfoSulphiteColor = new ColorBGRA(byte.MaxValue, 85, 85, byte.MaxValue);
             DelveinfoAzuriteColor = new ColorBGRA(byte.MaxValue, 85, 85, byte.MaxValue);
-
             ScourgeJuiceColor = new ColorBGRA(byte.MaxValue, 0, 0, byte.MaxValue);
 
+            DeployedActorObjects = new ToggleNode(false);
+            ActorObjectColor = new ColorNode(Color.White);
+            ActorObjectX = new RangeNode<int>(500, 0, 2560);
+            ActorObjectY = new RangeNode<int>(500, 0, 2560);
+            SoulgainPrev = new ToggleNode(false);
+            SoulGainPrevX = new RangeNode<int>(500, 0, 2560);
+            SoulGainPrevY = new RangeNode<int>(500, 0, 2560);
+            Wardloop = new ToggleNode(false);
+            WardLoopX = new RangeNode<int>(500, 0, 2560);
+            WardLoopY = new RangeNode<int>(500, 0, 2560);
+            SoulGainPrevColor = new ColorNode(Color.Red);
+            WardloopColor = new ColorNode(Color.Red);
+            StashToggleHotkey = new HotkeyNode(Keys.None);
+            InventoryHotkey = new HotkeyNode(Keys.None);
+            Enable = new ToggleNode(true);
+            PartyElement = new RangeNode<int>(20, 0, 300);
+            TimelessSizeScale = new RangeNode<float>(1, 0, 300);
         }
 
         public ToggleNode HealthToggle { get; set; }
-
         public RangeNode<int> HpPositionX { get; set; }
-
         public RangeNode<int> HpPositionY { get; set; }
-
         public ColorNode HpTextColor { get; set; }
-
         public ColorNode HpBackColor { get; set; }
 
         public ToggleNode ManaToggle { get; set; }
-
         public RangeNode<int> MpPositionX { get; set; }
-
         public RangeNode<int> MpPositionY { get; set; }
-
         public ColorNode MpTextColor { get; set; }
-
         public ColorNode MpBackColor { get; set; }
 
         public ToggleNode Resistances { get; set; }
-
         public RangeNode<int> ResistanceX { get; set; }
-
         public RangeNode<int> ResistanceY { get; set; }
-
-        public ToggleNode Delveinfo { get; set; }
-
-        public RangeNode<int> DelveinfoX { get; set; }
-
-        public RangeNode<int> DelveinfoY { get; set; }
-
-        public ColorNode DelveinfoSulphiteColor { get; set; }
-        public ColorNode DelveinfoAzuriteColor { get; set; }
-        public ColorNode ScourgeJuiceColor { get; set; }
-
-        public RangeNode<int> DelveTextSpacing { get; set; }
-
         public RangeNode<int> ResistanceTextSize { get; set; }
-
         public ColorNode FireResistanceColor { get; set; }
-
         public ColorNode ColdResistanceColor { get; set; }
-
         public ColorNode LightningResistanceColor { get; set; }
-
         public ColorNode ChaosResistanceColor { get; set; }
-
         public ColorNode KillsColor { get; set; }
 
         public ToggleNode LevelToggle { get; set; }
-
         public ToggleNode ExperienceBar { get; set; }
-
         public RangeNode<int> LastAreaDuration { get; set; }
-
         public ToggleNode SaveToFile { get; set; }
-
         public RangeNode<int> LevelPositionX { get; set; }
-
         public RangeNode<int> LevelPositionY { get; set; }
-
         public ColorNode LevelTextColor { get; set; }
-
         public RangeNode<int> LevelTextSize { get; set; }
-
         public ColorNode LevelBackColor { get; set; }
 
         public ToggleNode Resolution { get; set; }
-
         public RangeNode<int> ResolutionLeft { get; internal set; }
-
         public RangeNode<int> ResolutionTop { get; internal set; }
-
         public RangeNode<int> ResolutionRight { get; internal set; }
-
         public RangeNode<int> ResolutionBottom { get; internal set; }
 
         public ToggleNode ShowWindow { get; set; }
 
         public bool BackgroundSettingsTree { get; set; }
-
         public bool HpManaTree { get; set; }
-
         public bool HpTree { get; set; }
-
         public bool MpTree { get; set; }
-
         public bool PlayerResTree { get; set; }
-
         public bool InstaceInfoTree { get; set; }
-        public ToggleNode DeployedActorObjects { get; set; } = new ToggleNode(false);
+        public ToggleNode Delveinfo { get; set; }
+        public RangeNode<int> DelveinfoX { get; set; }
+        public RangeNode<int> DelveinfoY { get; set; }
+        public ColorNode DelveinfoSulphiteColor { get; set; }
+        public ColorNode DelveinfoAzuriteColor { get; set; }
+        public RangeNode<int> DelveTextSpacing { get; set; }
 
-        public ColorNode ActorObjectColor { get; set; } = new ColorNode(Color.White);
+        public ColorNode ScourgeJuiceColor { get; set; }
 
-        public RangeNode<int> ActorObjectX { get; set; } = new RangeNode<int>(500, 0, 2560);
+        public ToggleNode DeployedActorObjects { get; set; }
+        public ColorNode ActorObjectColor { get; set; }
+        public RangeNode<int> ActorObjectX { get; set; }
+        public RangeNode<int> ActorObjectY { get; set; }
 
-        public RangeNode<int> ActorObjectY { get; set; } = new RangeNode<int>(500, 0, 2560);
-        public ToggleNode SoulgainPrev { get; set; } = new ToggleNode(false);
+        public ToggleNode SoulgainPrev { get; set; }
+        public RangeNode<int> SoulGainPrevX { get; set; }
+        public RangeNode<int> SoulGainPrevY { get; set; }
+        public ColorNode SoulGainPrevColor { get; set; }
 
-        public RangeNode<int> SoulGainPrevX { get; set; } = new RangeNode<int>(500, 0, 2560);
+        public ToggleNode Wardloop { get; set; }
+        public RangeNode<int> WardLoopX { get; set; }
+        public RangeNode<int> WardLoopY { get; set; }
+        public ColorNode WardloopColor { get; set; }
 
-        public RangeNode<int> SoulGainPrevY { get; set; } = new RangeNode<int>(500, 0, 2560);
-        public ToggleNode Wardloop { get; set; } = new ToggleNode(false);
+        public HotkeyNode StashToggleHotkey { get; set; }
+        public HotkeyNode InventoryHotkey { get; set; }
 
-        public RangeNode<int> WardLoopX { get; set; } = new RangeNode<int>(500, 0, 2560);
-
-        public RangeNode<int> WardLoopY { get; set; } = new RangeNode<int>(500, 0, 2560);
-
-        public ColorNode SoulGainPrevColor { get; set; } = new ColorNode(Color.Red);
-        public ColorNode WardloopColor { get; set; } = new ColorNode(Color.Red);
-        public HotkeyNode StashToggleHotkey { get; set; } = new HotkeyNode(Keys.None);
-        public HotkeyNode InventoryHotkey { get; set; } = new HotkeyNode(Keys.None);
-
-        public ToggleNode Enable { get; set; } = new ToggleNode(true);
-
-        public RangeNode<int> PartyElement { get; set; } = new RangeNode<int>(20, 0, 300);
+        public ToggleNode Enable { get; set; }
+        public RangeNode<int> PartyElement { get; set; }
+        public RangeNode<float> TimelessSizeScale { get; set; }
     }
 }
