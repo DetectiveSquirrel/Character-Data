@@ -12,6 +12,10 @@ using CharacterData.Core;
 using ExileCore;
 using ExileCore.PoEMemory.Components;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace CharacterData.Utils
 {
@@ -19,10 +23,10 @@ namespace CharacterData.Utils
     {
         public LogRun()
         {
-            PluginDirectory = Core.Core.BasePluginDirectory;
+            LogDirectory = Core.Core.BaseConfigDirectory;
         }
 
-        public string PluginDirectory { get; set; }
+        public string LogDirectory { get; set; }
 
         public LevelLogs LevelLogss { get; set; }
 
@@ -111,7 +115,7 @@ namespace CharacterData.Utils
                     playerName = Core.Core.MainPlugin.GameController.Game.IngameState.Data.LocalPlayer.GetComponent<Player>().PlayerName;
                 }
 
-                var path1 = string.Format("{0}\\Level Entry\\{1}\\", PluginDirectory, playerName);
+                var path1 = string.Format("{0}\\Level Entry\\{1}\\", LogDirectory, playerName);
 
                 var path2 = string.Format("{0}JsonLog.json", path1);
                 var directoryName = Path.GetDirectoryName(path1);
@@ -204,7 +208,7 @@ namespace CharacterData.Utils
                 playerName = Core.Core.MainPlugin.GameController.Game.IngameState.Data.LocalPlayer.GetComponent<Player>().PlayerName;
             }
 
-            var path = string.Format("{0}\\Level Logs\\{1}", PluginDirectory, playerName);
+            var path = string.Format("{0}\\Level Logs\\{1}", LogDirectory, playerName);
             if (!MakeFolder(new DirectoryInfo(path)))
             {
                 Core.Core.MainPlugin.LogError("Failed to make Directoryies", 10f);

@@ -46,7 +46,7 @@ namespace CharacterData.Core
 
         public static List<PartyElementWindow> PlayerInPartyDraw { get; set; } = new List<PartyElementWindow>();
 
-        public static string BasePluginDirectory { get; set; }
+        public static string BaseConfigDirectory { get; set; }
 
         public static InstanceSnapshot Instance { get; set; }
 
@@ -120,7 +120,7 @@ namespace CharacterData.Core
 
         public override bool Initialise()
         {
-            BasePluginDirectory = DirectoryFullName;
+            BaseConfigDirectory = ConfigDirectory;
             MainPlugin = this;
             Kills = TryGetStat("character_kill_count");
             Instance = new InstanceSnapshot();
