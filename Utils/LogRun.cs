@@ -4,18 +4,12 @@
 // MVID: 74E598EA-D86C-4665-83EF-E2CAA5899D71
 // Assembly location: F:\Tools\Path of Exile Tools\Macros\plugins\Character Data\CharacterData.dll
 
+using ExileCore.PoEMemory.Components;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using CharacterData.Core;
-using ExileCore;
-using ExileCore.PoEMemory.Components;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace CharacterData.Utils
 {
@@ -41,7 +35,10 @@ namespace CharacterData.Utils
             {
                 var str1 = "";
                 if (full)
+                {
                     str1 += string.Format("{0}: ", DateTime.Now.ToString());
+                }
+
                 var str2 = str1 + string.Format(
                                "[Level: {0} ({1:N2}%)] [Gained XP: {2:#,##0} ({3}%)] [Area Dif: {5}] [Areas ETA: {4}/{6}] [Kills: {7:#,##0} | Total Kills: {8:#,##0}]",
                                 Core.Core.LocalPlayer.Level, Core.Core.Instance.Progress(),
@@ -54,10 +51,16 @@ namespace CharacterData.Utils
                                Core.Core.Instance.TotalRunsToNextLevel(),
                            Core.Core.LocalPlayer.Kills - Core.Core.Instance.JoinKills, Core.Core.LocalPlayer.Kills);
                 if (Core.Core.LocalPlayer.Name == Core.Core.Instance.JoinName && Core.Core.Instance.JoinLevel < Core.Core.LocalPlayer.Level)
+                {
                     str2 += string.Format(" [Level Ups: {0}]", Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinLevel);
+                }
+
                 if (full)
+                {
                     str2 += string.Format(" [Area: {0}] [Area Time: {1}]", Core.Core.Instance.JoinArea.DisplayName,
                         Core.Core.Instance.RunTime());
+                }
+
                 return str2;
             }
             catch
@@ -83,7 +86,7 @@ namespace CharacterData.Utils
                             ExperiencedGained = Core.Core.Instance.ExperienceGained(),
                             ExperienceGainedPercent = Core.Core.Instance.LevelPercentGained(),
                             LevelUps = (int)(Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinLevel),
-                            AreaKills = (Core.Core.LocalPlayer.Kills - Core.Core.Instance.JoinKills),
+                            AreaKills = Core.Core.LocalPlayer.Kills - Core.Core.Instance.JoinKills,
                             TotalKills = Core.Core.LocalPlayer.Kills
                         },
                         Area = new Area
@@ -124,14 +127,23 @@ namespace CharacterData.Utils
                     Entries = new List<Entry>()
                 };
                 if (!Directory.Exists(directoryName) && directoryName != null)
+                {
                     Directory.CreateDirectory(directoryName);
+                }
+
                 try
                 {
                     var str = File.ReadAllText(path2);
                     if (string.IsNullOrEmpty(str.Trim()))
+                    {
                         throw new Exception();
+                    }
+
                     if (str == "null")
+                    {
                         throw new Exception();
+                    }
+
                     levelLogs = JsonConvert.DeserializeObject<LevelLogs>(str);
                 }
                 catch
@@ -139,13 +151,13 @@ namespace CharacterData.Utils
                 }
 
                 levelLogs.Entries.Add(entry);
-                var str1 = JsonConvert.SerializeObject(levelLogs, (Formatting) 1);
+                var str1 = JsonConvert.SerializeObject(levelLogs, (Formatting)1);
                 using (var streamWriter = new StreamWriter(File.Create(path2)))
                 {
                     streamWriter.Write(str1);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //BasePlugin.LogError("Plugin error save json!\n" + ex, 3f);
             }
@@ -159,7 +171,10 @@ namespace CharacterData.Utils
             {
                 var str = "";
                 if (full)
+                {
                     str += string.Format("{0:HH:mm:ss}: ", DateTime.Now);
+                }
+
                 return str + string.Format(
                            "Level: {0} ({1:N2}%){7}Area Difference: {5}{7}XP gained: {2:#,##0} ({3}%){7}Area Until Level: {4}/{6}{7}Level Ups: {8}{7}Area Kills: {9:#,##0}",
                             Core.Core.LocalPlayer.Level, Core.Core.Instance.Progress(),
@@ -182,7 +197,10 @@ namespace CharacterData.Utils
             try
             {
                 if (directory.Parent != null && !directory.Parent.Exists)
+                {
                     MakeFolder(directory.Parent);
+                }
+
                 directory.Create();
             }
             catch

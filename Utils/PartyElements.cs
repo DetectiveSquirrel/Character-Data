@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CharacterData.Core;
-using ExileCore;
-using ExileCore.PoEMemory;
+﻿using ExileCore.PoEMemory;
 using ExileCore.PoEMemory.Components;
-using ExileCore.PoEMemory.Elements;
 using ExileCore.PoEMemory.MemoryObjects;
-using SharpDX;
+using System;
+using System.Collections.Generic;
 using static System.String;
 
 namespace CharacterData.Utils
@@ -20,7 +15,6 @@ namespace CharacterData.Utils
         }
 
         private Core.Core Core { get; }
-
 
         public static List<string> ListOfPlayersInParty()
         {
@@ -35,12 +29,13 @@ namespace CharacterData.Utils
                     foreach (var player in partyList)
                     {
                         if (player != null && player.ChildCount >= 3)
+                        {
                             playersInParty.Add(player?.Children[0].Text);
+                        }
                     }
                 }
-
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //CharacterData.Core.Core.MainPlugin.LogError("Character: " + e.StackTrace, 5);
             }
@@ -64,8 +59,10 @@ namespace CharacterData.Utils
                         {
                             var playerName = partyElement?.Children[0].Text;
 
-                            var newElement = new PartyElementWindow();
-                            newElement.PlayerName = playerName;
+                            var newElement = new PartyElementWindow
+                            {
+                                PlayerName = playerName
+                            };
 
                             // get entity
                             foreach (var entity in entityList)
@@ -75,7 +72,6 @@ namespace CharacterData.Utils
                                     newElement.Data.PlayerEntity = entity;
                                 }
                             }
-
 
                             //get party element
                             newElement.Element = partyElement;
@@ -88,7 +84,7 @@ namespace CharacterData.Utils
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //CharacterData.Core.Core.MainPlugin.LogError("Character: " + e.StackTrace, 5);
             }

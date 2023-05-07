@@ -35,11 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Libs\Keyboard.cs" />
-    <Compile Include="Libs\MemoryEditor.cs" />
     <Compile Include="Utils\InstanceSnapshot.cs" />
     <Compile Include="Utils\LogRun.cs" />
-    <Compile Include="Utils\LocalPlayer.cs" />
     <Compile Include="Utils\Level.cs" />
     <Compile Include="Utils\PartyElements.cs" />
     <Compile Include="Utils\SameAreaEta.cs" />

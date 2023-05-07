@@ -4,20 +4,20 @@
 // MVID: 74E598EA-D86C-4665-83EF-E2CAA5899D71
 // Assembly location: F:\Tools\Path of Exile Tools\Macros\plugins\Character Data\CharacterData.dll
 
-using System;
 using Newtonsoft.Json;
+using System;
 
 namespace CharacterData.Utils
 {
-  public class Info
-  {
-    [JsonProperty("Date")]
-    public DateTime Date { get; set; }
+    public class Info
+    {
+        [JsonProperty("Date")]
+        public DateTime Date { get; set; }
 
-    [JsonProperty("Level")]
-    public Level Level { get; set; }
+        [JsonProperty("Level")]
+        public Level Level { get; set; }
 
-    [JsonProperty("Area")]
-    public Area Area { get; set; }
-  }
+        [JsonProperty("Area")]
+        public Area Area { get; set; }
+    }
 }

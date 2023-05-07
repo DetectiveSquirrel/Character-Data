@@ -4,12 +4,10 @@
 // MVID: 74E598EA-D86C-4665-83EF-E2CAA5899D71
 // Assembly location: F:\Tools\Path of Exile Tools\Macros\plugins\Character Data\CharacterData.dll
 
-using System.Diagnostics.Contracts;
-using System.Windows.Forms;
-using ExileCore;
 using ExileCore.Shared.Interfaces;
 using ExileCore.Shared.Nodes;
 using SharpDX;
+using System.Windows.Forms;
 
 namespace CharacterData.Core
 {

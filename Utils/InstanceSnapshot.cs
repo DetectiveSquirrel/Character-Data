@@ -4,9 +4,9 @@
 // MVID: 74E598EA-D86C-4665-83EF-E2CAA5899D71
 // Assembly location: F:\Tools\Path of Exile Tools\Macros\plugins\Character Data\CharacterData.dll
 
-using System;
 using CharacterData.Long_Stuff;
 using ExileCore;
+using System;
 
 namespace CharacterData.Utils
 {
@@ -39,9 +39,9 @@ namespace CharacterData.Utils
 
         public double Progress()
         {
-            if (Core.Core.LocalPlayer.Level != 100)
-                return (Core.Core.LocalPlayer.Experience - (double) PlayerExperience.TotalExperience[Core.Core.LocalPlayer.Level]) / PlayerExperience.NextExperience[Core.Core.LocalPlayer.Level] * 100.0;
-            return 0.0;
+            return Core.Core.LocalPlayer.Level != 100
+                ? (Core.Core.LocalPlayer.Experience - (double)PlayerExperience.TotalExperience[Core.Core.LocalPlayer.Level]) / PlayerExperience.NextExperience[Core.Core.LocalPlayer.Level] * 100.0
+                : 0.0;
         }
 
         public long ExperienceGained()
@@ -66,23 +66,19 @@ namespace CharacterData.Utils
             var d = Math.Round(
                 (100.0 - Progress()) / 100.0 * PlayerExperience.NextExperience[Core.Core.LocalPlayer.Level] / ExperienceGained(),
                 0, MidpointRounding.AwayFromZero);
-            if (!double.IsInfinity(d))
-                return d.ToString("N0");
-            return "∞";
+            return !double.IsInfinity(d) ? d.ToString("N0") : "∞";
         }
 
         public string TotalRunsToNextLevel()
         {
-            var d = Math.Round(PlayerExperience.NextExperience[Core.Core.LocalPlayer.Level] / (double) ExperienceGained(), 2,
+            var d = Math.Round(PlayerExperience.NextExperience[Core.Core.LocalPlayer.Level] / (double)ExperienceGained(), 2,
                 MidpointRounding.AwayFromZero);
-            if (!double.IsInfinity(d))
-                return d.ToString("N0");
-            return "∞";
+            return !double.IsInfinity(d) ? d.ToString("N0") : "∞";
         }
 
         public string RunTime()
         {
-            var totalSeconds = (int) (DateTime.Now - JoinTime).TotalSeconds;
+            var totalSeconds = (int)(DateTime.Now - JoinTime).TotalSeconds;
             var num1 = totalSeconds % 60;
             var num2 = totalSeconds / 60;
             var num3 = num2 / 60;

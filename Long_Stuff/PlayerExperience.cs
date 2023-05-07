@@ -6,10 +6,10 @@
 
 namespace CharacterData.Long_Stuff
 {
-  public class PlayerExperience
-  {
-    public static long[] TotalExperience = new long[101]
+    public class PlayerExperience
     {
+        public static long[] TotalExperience = new long[101]
+        {
       0L,
       0L,
       525L,
@@ -111,9 +111,9 @@ namespace CharacterData.Long_Stuff
       3638186694L,
       3932818530L,
       4250334444L
-    };
-    public static long[] NextExperience = new long[101]
-    {
+        };
+        public static long[] NextExperience = new long[101]
+        {
       0L,
       525L,
       1235L,
@@ -215,6 +215,6 @@ namespace CharacterData.Long_Stuff
       294631836L,
       317515914L,
       0L
-    };
-  }
+        };
+    }
 }
