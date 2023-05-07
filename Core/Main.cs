@@ -374,7 +374,7 @@ namespace CharacterData.Core
             foreach (var partyElementWindow in PlayerInPartyDraw)
             {
                 var fontSize = 13;
-                if (partyElementWindow.Data?.PlayerEntity?.IsValid != null && !GameController.Game.IngameState.IngameUi.OpenLeftPanel.IsVisibleLocal)
+                if (ShouldDrawPartyElement(partyElementWindow))
                 {
                     var statCount = 1;
 
@@ -459,6 +459,17 @@ namespace CharacterData.Core
                 }
             }
         }
+
+        private bool ShouldDrawPartyElement(PartyElementWindow partyElementWindow)
+        {
+            return partyElementWindow.Data?.PlayerEntity?.IsValid != null
+                   && !GameController.Game.IngameState.IngameUi.OpenLeftPanel.IsVisibleLocal
+                   && !GameController.IngameState.IngameUi.ChatTitlePanel.IsVisibleLocal
+                   && GameController.IngameState.IngameUi.ChatPanel.IndexInParent != 140
+                   && !GameController.IngameState.IngameUi.Atlas.IsVisibleLocal
+                   && !GameController.IngameState.IngameUi.TreePanel.IsVisibleLocal;
+        }
+
         public double Progress(Entity entity)
         {
             if (entity.GetComponent<Player>().Level != 100)
