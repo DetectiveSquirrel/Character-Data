@@ -1,11 +1,5 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: CharacterData.Utils.InstanceSnapshot
-// Assembly: CharacterData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 74E598EA-D86C-4665-83EF-E2CAA5899D71
-// Assembly location: F:\Tools\Path of Exile Tools\Macros\plugins\Character Data\CharacterData.dll
-
-using CharacterData.Long_Stuff;
-using ExileCore;
+﻿using ExileCore;
+using CharacterData.ExperienceTable;
 using System;
 
 namespace CharacterData.Utils
@@ -14,13 +8,13 @@ namespace CharacterData.Utils
     {
         public InstanceSnapshot()
         {
-            JoinExperience = Core.Core.LocalPlayer.Experience;
-            JoinLevel = Core.Core.LocalPlayer.Level;
-            JoinName = Core.Core.LocalPlayer.Name;
+            JoinExperience = CharacterData.LocalPlayer.Experience;
+            JoinLevel = CharacterData.LocalPlayer.Level;
+            JoinName = CharacterData.LocalPlayer.Name;
             JoinTime = DateTime.Now;
-            JoinArea = Core.Core.LocalPlayer.Area;
-            JoinAreaHash = Core.Core.LocalPlayer.AreaHash;
-            JoinKills = Core.Core.LocalPlayer.Kills;
+            JoinArea = CharacterData.LocalPlayer.Area;
+            JoinAreaHash = CharacterData.LocalPlayer.AreaHash;
+            JoinKills = CharacterData.LocalPlayer.Kills;
         }
 
         public long JoinExperience { get; set; }
@@ -37,41 +31,41 @@ namespace CharacterData.Utils
 
         public int JoinKills { get; set; }
 
-        public double Progress()
+        public static double Progress()
         {
-            return Core.Core.LocalPlayer.Level != 100
-                ? (Core.Core.LocalPlayer.Experience - (double)PlayerExperience.TotalExperience[Core.Core.LocalPlayer.Level]) / PlayerExperience.NextExperience[Core.Core.LocalPlayer.Level] * 100.0
+            return CharacterData.LocalPlayer.Level != 100
+                ? (CharacterData.LocalPlayer.Experience - (double)PlayerExperience.TotalExperience[CharacterData.LocalPlayer.Level]) / PlayerExperience.NextExperience[CharacterData.LocalPlayer.Level] * 100.0
                 : 0.0;
         }
 
         public long ExperienceGained()
         {
-            return Core.Core.LocalPlayer.Experience - JoinExperience;
+            return CharacterData.LocalPlayer.Experience - JoinExperience;
         }
 
         public long KillsInArea()
         {
-            return Core.Core.LocalPlayer.Kills - JoinKills;
+            return CharacterData.LocalPlayer.Kills - JoinKills;
         }
 
         public string LevelPercentGained()
         {
-            return (Core.Core.LocalPlayer.Level == 100
+            return (CharacterData.LocalPlayer.Level == 100
                 ? 0.0
-                : ExperienceGained() * 100.0 / PlayerExperience.NextExperience[Core.Core.LocalPlayer.Level]).ToString("N2");
+                : ExperienceGained() * 100.0 / PlayerExperience.NextExperience[CharacterData.LocalPlayer.Level]).ToString("N2");
         }
 
         public string RunsToNextLevel()
         {
             var d = Math.Round(
-                (100.0 - Progress()) / 100.0 * PlayerExperience.NextExperience[Core.Core.LocalPlayer.Level] / ExperienceGained(),
+                (100.0 - Progress()) / 100.0 * PlayerExperience.NextExperience[CharacterData.LocalPlayer.Level] / ExperienceGained(),
                 0, MidpointRounding.AwayFromZero);
             return !double.IsInfinity(d) ? d.ToString("N0") : "∞";
         }
 
         public string TotalRunsToNextLevel()
         {
-            var d = Math.Round(PlayerExperience.NextExperience[Core.Core.LocalPlayer.Level] / (double)ExperienceGained(), 2,
+            var d = Math.Round(PlayerExperience.NextExperience[CharacterData.LocalPlayer.Level] / (double)ExperienceGained(), 2,
                 MidpointRounding.AwayFromZero);
             return !double.IsInfinity(d) ? d.ToString("N0") : "∞";
         }

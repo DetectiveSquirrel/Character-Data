@@ -1,11 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: CharacterData.Utils.LogRun
-// Assembly: CharacterData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 74E598EA-D86C-4665-83EF-E2CAA5899D71
-// Assembly location: F:\Tools\Path of Exile Tools\Macros\plugins\Character Data\CharacterData.dll
-
-using ExileCore.PoEMemory.Components;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +10,7 @@ namespace CharacterData.Utils
     {
         public LogRun()
         {
-            LogDirectory = Core.Core.BaseConfigDirectory;
+            LogDirectory = CharacterData.BaseConfigDirectory;
         }
 
         public string LogDirectory { get; set; }
@@ -26,7 +19,7 @@ namespace CharacterData.Utils
 
         public void Message(int timer = 600)
         {
-            Core.Core.MainPlugin.LogMessage(DataToString(false), timer);
+            CharacterData.MainPlugin.LogMessage(DataToString(false), timer);
         }
 
         public string DataToString(bool full = false)
@@ -41,24 +34,24 @@ namespace CharacterData.Utils
 
                 var str2 = str1 + string.Format(
                                "[Level: {0} ({1:N2}%)] [Gained XP: {2:#,##0} ({3}%)] [Area Dif: {5}] [Areas ETA: {4}/{6}] [Kills: {7:#,##0} | Total Kills: {8:#,##0}]",
-                                Core.Core.LocalPlayer.Level, Core.Core.Instance.Progress(),
-                                Core.Core.Instance.ExperienceGained(), Core.Core.Instance.LevelPercentGained(),
-                               Core.Core.Instance.RunsToNextLevel(),
-                               Core.Core.LocalPlayer.Level - Core.Core.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel > 0
+                                CharacterData.LocalPlayer.Level, InstanceSnapshot.Progress(),
+                                CharacterData.Instance.ExperienceGained(), CharacterData.Instance.LevelPercentGained(),
+                               CharacterData.Instance.RunsToNextLevel(),
+                               CharacterData.LocalPlayer.Level - CharacterData.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel > 0
                                    ? string.Format("+{0}",
-                                       Core.Core.LocalPlayer.Level - Core.Core.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel)
-                                   : (Core.Core.LocalPlayer.Level - Core.Core.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel).ToString(),
-                               Core.Core.Instance.TotalRunsToNextLevel(),
-                           Core.Core.LocalPlayer.Kills - Core.Core.Instance.JoinKills, Core.Core.LocalPlayer.Kills);
-                if (Core.Core.LocalPlayer.Name == Core.Core.Instance.JoinName && Core.Core.Instance.JoinLevel < Core.Core.LocalPlayer.Level)
+                                       CharacterData.LocalPlayer.Level - CharacterData.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel)
+                                   : (CharacterData.LocalPlayer.Level - CharacterData.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel).ToString(),
+                               CharacterData.Instance.TotalRunsToNextLevel(),
+                           CharacterData.LocalPlayer.Kills - CharacterData.Instance.JoinKills, CharacterData.LocalPlayer.Kills);
+                if (CharacterData.LocalPlayer.Name == CharacterData.Instance.JoinName && CharacterData.Instance.JoinLevel < CharacterData.LocalPlayer.Level)
                 {
-                    str2 += string.Format(" [Level Ups: {0}]", Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinLevel);
+                    str2 += string.Format(" [Level Ups: {0}]", CharacterData.LocalPlayer.Level - CharacterData.Instance.JoinLevel);
                 }
 
                 if (full)
                 {
-                    str2 += string.Format(" [Area: {0}] [Area Time: {1}]", Core.Core.Instance.JoinArea.DisplayName,
-                        Core.Core.Instance.RunTime());
+                    str2 += string.Format(" [Area: {0}] [Area Time: {1}]", CharacterData.Instance.JoinArea.DisplayName,
+                        CharacterData.Instance.RunTime());
                 }
 
                 return str2;
@@ -81,41 +74,41 @@ namespace CharacterData.Utils
                         Date = DateTime.Now,
                         Level = new Level
                         {
-                            CurrentLevel = Core.Core.LocalPlayer.Level,
-                            CurrentLevelPercent = Core.Core.Instance.Progress(),
-                            ExperiencedGained = Core.Core.Instance.ExperienceGained(),
-                            ExperienceGainedPercent = Core.Core.Instance.LevelPercentGained(),
-                            LevelUps = (int)(Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinLevel),
-                            AreaKills = Core.Core.LocalPlayer.Kills - Core.Core.Instance.JoinKills,
-                            TotalKills = Core.Core.LocalPlayer.Kills
+                            CurrentLevel = CharacterData.LocalPlayer.Level,
+                            CurrentLevelPercent = InstanceSnapshot.Progress(),
+                            ExperiencedGained = CharacterData.Instance.ExperienceGained(),
+                            ExperienceGainedPercent = CharacterData.Instance.LevelPercentGained(),
+                            LevelUps = (int)(CharacterData.LocalPlayer.Level - CharacterData.Instance.JoinLevel),
+                            AreaKills = CharacterData.LocalPlayer.Kills - CharacterData.Instance.JoinKills,
+                            TotalKills = CharacterData.LocalPlayer.Kills
                         },
                         Area = new Area
                         {
-                            Name = Core.Core.Instance.JoinArea.DisplayName,
-                            LevelDifference = Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinArea.Area.MonsterLevel > 0
-                                ? string.Format("+{0}", Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinArea.Area.MonsterLevel)
-                                : (Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinArea.Area.MonsterLevel).ToString(),
-                            TimeSpent = Core.Core.Instance.RunTime(),
+                            Name = CharacterData.Instance.JoinArea.DisplayName,
+                            LevelDifference = CharacterData.LocalPlayer.Level - CharacterData.Instance.JoinArea.Area.MonsterLevel > 0
+                                ? string.Format("+{0}", CharacterData.LocalPlayer.Level - CharacterData.Instance.JoinArea.Area.MonsterLevel)
+                                : (CharacterData.LocalPlayer.Level - CharacterData.Instance.JoinArea.Area.MonsterLevel).ToString(),
+                            TimeSpent = CharacterData.Instance.RunTime(),
                             SameAreaEta = new SameAreaEta
                             {
-                                Left = Core.Core.Instance.RunsToNextLevel(),
-                                TotalForLevel = Core.Core.Instance.TotalRunsToNextLevel()
+                                Left = CharacterData.Instance.RunsToNextLevel(),
+                                TotalForLevel = CharacterData.Instance.TotalRunsToNextLevel()
                             }
                         }
                     }
                 };
 
-                var playerName = Core.Core.LocalPlayer.Name;
+                var playerName = CharacterData.LocalPlayer.Name;
 
                 // shit fix for null player name
                 if (string.IsNullOrEmpty(playerName))
                 {
-                    while (string.IsNullOrEmpty(Core.Core.MainPlugin.GameController.Game.IngameState.Data.LocalPlayer.GetComponent<Player>().PlayerName))
+                    while (string.IsNullOrEmpty(CharacterData.MainPlugin.GameController.Game.IngameState.Data.LocalPlayer.GetComponent<ExileCore.PoEMemory.Components.Player>().PlayerName))
                     {
                         Thread.Sleep(5);
-                        Core.Core.MainPlugin.LogError("CharacterData: Null or Empty Name", 10);
+                        CharacterData.MainPlugin.LogError("PlayerData: Null or Empty Name", 10);
                     }
-                    playerName = Core.Core.MainPlugin.GameController.Game.IngameState.Data.LocalPlayer.GetComponent<Player>().PlayerName;
+                    playerName = CharacterData.MainPlugin.GameController.Game.IngameState.Data.LocalPlayer.GetComponent<ExileCore.PoEMemory.Components.Player>().PlayerName;
                 }
 
                 var path1 = string.Format("{0}\\Level Entry\\{1}\\", LogDirectory, playerName);
@@ -177,14 +170,14 @@ namespace CharacterData.Utils
 
                 return str + string.Format(
                            "Level: {0} ({1:N2}%){7}Area Difference: {5}{7}XP gained: {2:#,##0} ({3}%){7}Area Until Level: {4}/{6}{7}Level Ups: {8}{7}Area Kills: {9:#,##0}",
-                            Core.Core.LocalPlayer.Level, Core.Core.Instance.Progress(),
-                           Core.Core.Instance.ExperienceGained(), Core.Core.Instance.LevelPercentGained(),
-                           Core.Core.Instance.RunsToNextLevel(),
-                           Core.Core.LocalPlayer.Level - Core.Core.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel > 0
-                               ? string.Format("+{0}", Core.Core.LocalPlayer.Level - Core.Core.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel)
-                               : (Core.Core.LocalPlayer.Level - Core.Core.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel).ToString(),
-                           Core.Core.Instance.TotalRunsToNextLevel(), Environment.NewLine, Core.Core.LocalPlayer.Level - Core.Core.Instance.JoinLevel,
-                           Core.Core.LocalPlayer.Kills - Core.Core.Instance.JoinKills);
+                            CharacterData.LocalPlayer.Level, InstanceSnapshot.Progress(),
+                           CharacterData.Instance.ExperienceGained(), CharacterData.Instance.LevelPercentGained(),
+                           CharacterData.Instance.RunsToNextLevel(),
+                           CharacterData.LocalPlayer.Level - CharacterData.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel > 0
+                               ? string.Format("+{0}", CharacterData.LocalPlayer.Level - CharacterData.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel)
+                               : (CharacterData.LocalPlayer.Level - CharacterData.MainPlugin.GameController.Game.IngameState.Data.CurrentAreaLevel).ToString(),
+                           CharacterData.Instance.TotalRunsToNextLevel(), Environment.NewLine, CharacterData.LocalPlayer.Level - CharacterData.Instance.JoinLevel,
+                           CharacterData.LocalPlayer.Kills - CharacterData.Instance.JoinKills);
             }
             catch
             {
@@ -213,23 +206,23 @@ namespace CharacterData.Utils
 
         public bool Save()
         {
-            var playerName = Core.Core.LocalPlayer.Name;
+            var playerName = CharacterData.LocalPlayer.Name;
 
             // shit fix for null player name
             if (string.IsNullOrEmpty(playerName))
             {
-                while (string.IsNullOrEmpty(Core.Core.MainPlugin.GameController.Game.IngameState.Data.LocalPlayer.GetComponent<Player>().PlayerName))
+                while (string.IsNullOrEmpty(CharacterData.MainPlugin.GameController.Game.IngameState.Data.LocalPlayer.GetComponent<ExileCore.PoEMemory.Components.Player>().PlayerName))
                 {
                     Thread.Sleep(5);
-                    Core.Core.MainPlugin.LogError("CharacterData: Null or Empty Name", 10);
+                    CharacterData.MainPlugin.LogError("PlayerData: Null or Empty Name", 10);
                 }
-                playerName = Core.Core.MainPlugin.GameController.Game.IngameState.Data.LocalPlayer.GetComponent<Player>().PlayerName;
+                playerName = CharacterData.MainPlugin.GameController.Game.IngameState.Data.LocalPlayer.GetComponent<ExileCore.PoEMemory.Components.Player>().PlayerName;
             }
 
             var path = string.Format("{0}\\Level Logs\\{1}", LogDirectory, playerName);
             if (!MakeFolder(new DirectoryInfo(path)))
             {
-                Core.Core.MainPlugin.LogError("Failed to make Directoryies", 10f);
+                CharacterData.MainPlugin.LogError("Failed to make Directoryies", 10f);
                 return false;
             }
 

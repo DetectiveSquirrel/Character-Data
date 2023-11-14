@@ -1,83 +1,78 @@
-﻿using ExileCore.PoEMemory;
-using ExileCore.PoEMemory.Components;
+﻿using ExileCore;
+using ExileCore.PoEMemory;
 using ExileCore.PoEMemory.MemoryObjects;
+using ExileCore.Shared.Enums;
 using System;
 using System.Collections.Generic;
-using static System.String;
 
 namespace CharacterData.Utils
 {
     public class PartyElements
     {
-        public PartyElements(Core.Core core)
-        {
-            Core = core;
-        }
+        private const int BaseWindowChildIndex = 1;
+        private const int PartyListIndex = 0;
+        private const int PlayerNameChildIndex = 0;
+        private const int TPButtonIndex = 3;
 
-        private Core.Core Core { get; }
-
-        public static List<string> ListOfPlayersInParty()
+        public static List<string> ListOfPlayersInParty(GameController gameController)
         {
             var playersInParty = new List<string>();
 
             try
             {
-                var baseWindow = CharacterData.Core.Core.MainPlugin.GameController.Game.IngameState.UIRoot.Children[1].Children[18];
+                var baseWindow = gameController.Game.IngameState.UIRoot.Children[BaseWindowChildIndex]?.Children[18];
                 if (baseWindow != null)
                 {
-                    var partyList = baseWindow.Children[0]?.Children[0]?.Children;
+                    var partyList = baseWindow.Children[PartyListIndex]?.Children[0]?.Children;
                     foreach (var player in partyList)
                     {
                         if (player != null && player.ChildCount >= 3)
                         {
-                            playersInParty.Add(player?.Children[0].Text);
+                            playersInParty.Add(player.Children[PlayerNameChildIndex].Text);
                         }
                     }
                 }
             }
             catch (Exception)
             {
-                //CharacterData.Core.Core.MainPlugin.LogError("Character: " + e.StackTrace, 5);
+                return playersInParty;
             }
 
             return playersInParty;
         }
 
-        public static List<PartyElementWindow> GetPlayerInfoElementList(List<Entity> entityList, int child)
+        public static List<PartyElementWindow> GetPlayerInfoElementList(GameController gameController)
         {
             var playersInParty = new List<PartyElementWindow>();
 
             try
             {
-                var baseWindow = CharacterData.Core.Core.MainPlugin.GameController.IngameState.IngameUi.PartyElement;
+                var baseWindow = gameController.IngameState.IngameUi.PartyElement;
                 if (baseWindow != null)
                 {
-                    var partElementList = baseWindow.Children[0].Children[0].Children;
+                    var partElementList = baseWindow.Children[0]?.Children[0]?.Children;
                     if (partElementList != null)
                     {
                         foreach (var partyElement in partElementList)
                         {
-                            var playerName = partyElement?.Children[0].Text;
+                            var playerName = partyElement?.Children[PlayerNameChildIndex].Text;
 
                             var newElement = new PartyElementWindow
                             {
-                                PlayerName = playerName
+                                PlayerName = playerName,
+                                Element = partyElement,
+                                TPButton = partyElement?.Children[partyElement.ChildCount == 4 ? TPButtonIndex : TPButtonIndex - 1]
                             };
 
-                            // get entity
-                            foreach (var entity in entityList)
+                            // Get entity
+                            foreach (var entity in gameController.EntityListWrapper.ValidEntitiesByType[EntityType.Player])
                             {
-                                if (entity != null && entity.GetComponent<Player>().PlayerName == playerName)
+                                if (entity != null && entity.GetComponent<ExileCore.PoEMemory.Components.Player>().PlayerName == playerName)
                                 {
-                                    newElement.Data.PlayerEntity = entity;
+                                    newElement.Player = entity;
+                                    break; // No need to continue if entity found
                                 }
                             }
-
-                            //get party element
-                            newElement.Element = partyElement;
-
-                            //party element swirly tp thingo
-                            newElement.TPButton = partyElement?.Children[partyElement?.ChildCount == 4 ? 3 : 2];
 
                             playersInParty.Add(newElement);
                         }
@@ -86,7 +81,7 @@ namespace CharacterData.Utils
             }
             catch (Exception)
             {
-                //CharacterData.Core.Core.MainPlugin.LogError("Character: " + e.StackTrace, 5);
+                return playersInParty;
             }
 
             return playersInParty;
@@ -95,19 +90,14 @@ namespace CharacterData.Utils
 
     public class PartyElementWindow
     {
-        public string PlayerName { get; set; } = Empty;
-        public PlayerData Data { get; set; } = new PlayerData();
+        public string PlayerName { get; set; } = string.Empty;
+        public Entity Player { get; set; } = null;
         public Element Element { get; set; } = new Element();
         public Element TPButton { get; set; } = new Element();
 
         public override string ToString()
         {
-            return $"PlayerName: {PlayerName}, Data.PlayerEntity.Distance: {Data.PlayerEntity.Distance(Entity.Player).ToString() ?? "Null"}";
+            return $"PlayerName: {PlayerName}, Data.PlayerEntity.Distance: {Player?.Distance(Entity.Player).ToString() ?? "Null"}";
         }
-    }
-
-    public class PlayerData
-    {
-        public Entity PlayerEntity { get; set; } = null;
     }
 }
