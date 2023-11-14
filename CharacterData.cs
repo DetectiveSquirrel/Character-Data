@@ -95,7 +95,7 @@ namespace CharacterData
 
                 foreach (var entity in entities)
                 {
-                    var playerComp = entity.GetComponent<ExileCore.PoEMemory.Components.Player>();
+                    var playerComp = entity.GetComponent<Player>();
                     if (playerComp.PlayerName != LocalPlayer.Name)
                     {
                         nameToKillsList.Add($"{playerComp.PlayerName,-23} ({playerComp.Level})", TryGetStat(GameStat.CharacterKillCount, entity));
@@ -373,20 +373,33 @@ namespace CharacterData
 
         private void GlobePercents()
         {
-            DrawGlobePercent(Settings.HealthToggle, LocalPlayer.Health.HPPercentage, Settings.HpPositionX, Settings.HpPositionY, Settings.HpBackColor, Settings.HpTextColor);
-            DrawGlobePercent(Settings.ManaToggle, LocalPlayer.Health.MPPercentage, Settings.MpPositionX, Settings.MpPositionY, Settings.MpBackColor, Settings.MpTextColor);
+            DrawGlobePercent(Settings.HealthToggle, LocalPlayer.Health.HPPercentage, GameController.IngameState.IngameUi.GameUI.LifeOrb.GetClientRectCache.Center.TranslateToNum(), Settings.HpBackColor, Settings.HpTextColor);
+            DrawGlobePercent(Settings.ManaToggle, LocalPlayer.Health.MPPercentage, GameController.IngameState.IngameUi.GameUI.ManaOrb.GetClientRectCache.Center.TranslateToNum(), Settings.MpBackColor, Settings.MpTextColor);
         }
 
-        private void DrawGlobePercent(bool toggle, double percent, float posX, float posY, Color backColor, Color textColor)
+        private void DrawGlobePercent(bool toggle, double percent, Vector2 pos, Color backColor, Color textColor)
         {
             if (!toggle)
                 return;
 
             var text = ((int)Math.Round(percent * 100.0)).ToString(CultureInfo.InvariantCulture);
-            var rectangle = new RectangleF(posX, posY, 50f, 27f);
+            using (Graphics.SetTextScale(Settings.GlobeFontScale))
+            {
+                var drawText = new Vector2();
+                if (!String.IsNullOrEmpty(Settings.GlobeFont))
+                {
+                    drawText = Graphics.DrawText(text, pos, textColor, Settings.GlobeFont, FontAlign.Center | FontAlign.VerticalCenter);
+                }
+                else
+                {
+                    drawText = Graphics.DrawText(text, pos, textColor, FontAlign.Center | FontAlign.VerticalCenter);
+                }
 
-            Graphics.DrawBox(rectangle, backColor);
-            Graphics.DrawText(text, new Vector2(rectangle.X + (rectangle.Width / 2f), rectangle.Y), textColor, FontAlign.Center);
+                var rectangle = new RectangleF(pos.X - drawText.X/2, pos.Y - drawText.Y/2, drawText.X, drawText.Y);
+
+                Graphics.DrawBox(rectangle, backColor);
+            }
+            
         }
 
         public class LocalPlayer

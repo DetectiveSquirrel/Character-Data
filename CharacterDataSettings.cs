@@ -10,17 +10,17 @@ namespace CharacterData
         // Required
         public ToggleNode Enable { get; set; } = new ToggleNode(false);
 
+        // Helath + Mana Font
+        public TextNode GlobeFont { get; set; } = string.Empty;
+        public RangeNode<float> GlobeFontScale { get; set; } = new RangeNode<float>(1, 1, 30);
+
         // Health settings
         public ToggleNode HealthToggle { get; set; } = new ToggleNode(true);
-        public RangeNode<int> HpPositionX { get; set; } = new RangeNode<int>(92, 0, 2000);
-        public RangeNode<int> HpPositionY { get; set; } = new RangeNode<int>(952, 0, 2000);
         public ColorNode HpTextColor { get; set; } = new ColorBGRA(202, 67, 67, 255);
         public ColorNode HpBackColor { get; set; } = new ColorBGRA(0, 0, 0, 255);
 
         // Mana settings
         public ToggleNode ManaToggle { get; set; } = new ToggleNode(true);
-        public RangeNode<int> MpPositionX { get; set; } = new RangeNode<int>(1176, 0, 2000);
-        public RangeNode<int> MpPositionY { get; set; } = new RangeNode<int>(952, 0, 2000);
         public ColorNode MpTextColor { get; set; } = new ColorBGRA(47, 111, 247, 255);
         public ColorNode MpBackColor { get; set; } = new ColorBGRA(0, 0, 0, 255);
 
