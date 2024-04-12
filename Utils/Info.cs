@@ -1,17 +1,16 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace CharacterData.Utils
+namespace CharacterData.Utils;
+
+public class Info
 {
-    public class Info
-    {
-        [JsonProperty("Date")]
-        public DateTime Date { get; set; }
+    [JsonProperty("Date")]
+    public DateTime Date { get; set; }
 
-        [JsonProperty("Level")]
-        public Level Level { get; set; }
+    [JsonProperty("Level")]
+    public Level Level { get; set; }
 
-        [JsonProperty("Area")]
-        public Area Area { get; set; }
-    }
+    [JsonProperty("Area")]
+    public Area Area { get; set; }
 }

@@ -1,103 +1,65 @@
 ﻿using ExileCore;
 using ExileCore.PoEMemory;
+using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.MemoryObjects;
 using ExileCore.Shared.Enums;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
-namespace CharacterData.Utils
+namespace CharacterData.Utils;
+
+public class PartyElements
 {
-    public class PartyElements
+    private const int PlayerNameChildIndex = 0;
+
+    public static List<PartyElementWindow> GetPlayerInfoElementList(GameController gameController)
     {
-        private const int BaseWindowChildIndex = 1;
-        private const int PartyListIndex = 0;
-        private const int PlayerNameChildIndex = 0;
-        private const int TPButtonIndex = 3;
+        var playersInParty = new List<PartyElementWindow>();
 
-        public static List<string> ListOfPlayersInParty(GameController gameController)
+        try
         {
-            var playersInParty = new List<string>();
-
-            try
+            var baseWindow = gameController.IngameState.IngameUi.PartyElement;
+            var partElementList = baseWindow?.Children[0]?.Children[0]?.Children;
+            if (partElementList != null)
             {
-                var baseWindow = gameController.Game.IngameState.UIRoot.Children[BaseWindowChildIndex]?.Children[18];
-                if (baseWindow != null)
+                foreach (var partyElement in partElementList)
                 {
-                    var partyList = baseWindow.Children[PartyListIndex]?.Children[0]?.Children;
-                    foreach (var player in partyList)
+                    var playerName = partyElement?.Children[PlayerNameChildIndex].Text;
+
+                    var newElement = new PartyElementWindow
                     {
-                        if (player != null && player.ChildCount >= 3)
-                        {
-                            playersInParty.Add(player.Children[PlayerNameChildIndex].Text);
-                        }
+                        PlayerName = playerName,
+                        Element = partyElement
+                    };
+
+                    // Get entity
+                    foreach (var entity in gameController.EntityListWrapper.ValidEntitiesByType[EntityType.Player]
+                                 .Where(entity => entity != null && entity.GetComponent<Player>().PlayerName == playerName))
+                    {
+                        newElement.Player = entity;
+                        break; // No need to continue if entity found
                     }
+
+                    playersInParty.Add(newElement);
                 }
             }
-            catch (Exception)
-            {
-                return playersInParty;
-            }
-
+        }
+        catch (Exception)
+        {
             return playersInParty;
         }
 
-        public static List<PartyElementWindow> GetPlayerInfoElementList(GameController gameController)
-        {
-            var playersInParty = new List<PartyElementWindow>();
-
-            try
-            {
-                var baseWindow = gameController.IngameState.IngameUi.PartyElement;
-                if (baseWindow != null)
-                {
-                    var partElementList = baseWindow.Children[0]?.Children[0]?.Children;
-                    if (partElementList != null)
-                    {
-                        foreach (var partyElement in partElementList)
-                        {
-                            var playerName = partyElement?.Children[PlayerNameChildIndex].Text;
-
-                            var newElement = new PartyElementWindow
-                            {
-                                PlayerName = playerName,
-                                Element = partyElement,
-                                TPButton = partyElement?.Children[partyElement.ChildCount == 4 ? TPButtonIndex : TPButtonIndex - 1]
-                            };
-
-                            // Get entity
-                            foreach (var entity in gameController.EntityListWrapper.ValidEntitiesByType[EntityType.Player])
-                            {
-                                if (entity != null && entity.GetComponent<ExileCore.PoEMemory.Components.Player>().PlayerName == playerName)
-                                {
-                                    newElement.Player = entity;
-                                    break; // No need to continue if entity found
-                                }
-                            }
-
-                            playersInParty.Add(newElement);
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                return playersInParty;
-            }
-
-            return playersInParty;
-        }
+        return playersInParty;
     }
+}
 
-    public class PartyElementWindow
-    {
-        public string PlayerName { get; set; } = string.Empty;
-        public Entity Player { get; set; } = null;
-        public Element Element { get; set; } = new Element();
-        public Element TPButton { get; set; } = new Element();
+public class PartyElementWindow
+{
+    public string PlayerName { get; set; } = string.Empty;
+    public Entity Player { get; set; }
+    public Element Element { get; set; } = new();
 
-        public override string ToString()
-        {
-            return $"PlayerName: {PlayerName}, Data.PlayerEntity.Distance: {Player?.Distance(Entity.Player).ToString() ?? "Null"}";
-        }
-    }
+    public override string ToString() => $"PlayerName: {PlayerName}, Data.PlayerEntity.Distance: {Player?.Distance(Entity.Player).ToString(CultureInfo.InvariantCulture) ?? "Null"}";
 }
